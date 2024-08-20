@@ -8,7 +8,7 @@ import { createStore } from "../redux";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { CircularProgress, Box } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material";
-import useThemeToggle from "../hooks/useThemeToggle"; // Adjust the import path as needed
+import useThemeToggle from "../hooks/useThemeToggle";
 import Navbar from "../components/Navbar";
 import { ToastContainer } from "react-toastify";
 

@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import { useRouter } from "next/router";
 import Navbar from "./Navbar";
 import useThemeToggle from "../hooks/useThemeToggle";
+jest.mock("../public/favicon.ico", () => "/mocked-image-url");
 
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
