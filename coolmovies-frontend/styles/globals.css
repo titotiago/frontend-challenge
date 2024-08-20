@@ -1,3 +1,19 @@
+/* styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .dark {
+    @apply bg-primary text-gray-100;
+  }
+  .light {
+    @apply bg-secondary text-gray-900;
+
+  }
+}
+
+
 html,
 body {
   padding: 0;
@@ -13,3 +29,4 @@ a {
 * {
   box-sizing: border-box;
 }
+

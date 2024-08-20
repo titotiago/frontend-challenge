@@ -1,37 +1,77 @@
-import '../styles/globals.css';
-import type { AppProps } from 'next/app';
-import React, { FC, useState } from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
-import Head from 'next/head';
-import { createStore } from '../redux';
-import { EnhancedStore } from '@reduxjs/toolkit';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import "../styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
+import type { AppProps } from "next/app";
+import React, { useMemo } from "react";
+import { Provider as ReduxProvider } from "react-redux";
+import Head from "next/head";
+import { createStore } from "../redux";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { CircularProgress, Box } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material";
+import useThemeToggle from "../hooks/useThemeToggle"; // Adjust the import path as needed
+import Navbar from "../components/Navbar";
+import { ToastContainer } from "react-toastify";
 
-const App: FC<AppProps> = ({ Component, pageProps }) => {
-  const [store, setStore] = useState<EnhancedStore | null>(null);
-  React.useEffect(() => {
-    const client = new ApolloClient({
-      cache: new InMemoryCache(),
-      uri: '/graphql',
-    });
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  uri: "/graphql",
+});
 
-    const store = createStore({ epicDependencies: { client } });
-    setStore(store);
-  }, []);
-  if (!store) return <>{'Loading...'}</>;
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  const { mode, toggleTheme } = useThemeToggle();
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          background: {
+            default: mode === "dark" ? "#171717" : "#ffffff",
+          },
+          text: {
+            primary: mode === "dark" ? "#ffffff" : "#171717",
+          },
+        },
+        typography: {
+          fontFamily: "Roboto, sans-serif",
+        },
+      }),
+    [mode]
+  );
+
+  const store = useMemo(
+    () => createStore({ epicDependencies: { client } }),
+    []
+  );
+
+  if (!store) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Head>
-        <title>{'Coolmovies Frontend'}</title>
-        <meta charSet='UTF-8' />
-        <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <title>Coolmovies Frontend</title>
+        <meta charSet="UTF-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <ReduxProvider store={store}>
-        <Component {...pageProps} />
+        <ToastContainer />
+        <Navbar />
+        <Component {...pageProps} toggleTheme={toggleTheme} />
       </ReduxProvider>
-    </>
+    </ThemeProvider>
   );
 };
 
-export default App;
+export default MyApp;
